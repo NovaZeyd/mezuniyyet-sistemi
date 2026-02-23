@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Əmək Məzuniyyəti Sistemi</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #060d16; font-family: 'Segoe UI','Helvetica Neue',sans-serif; color: #e2e8f0; }
+  input, textarea, button { font-family: inherit; }
+  ::-webkit-scrollbar { width: 6px; } 
+  ::-webkit-scrollbar-track { background: #0a1420; }
+  ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const INITIAL_EMPLOYEES = [
+  { id: 1, name: "İRADƏ ƏSGƏROVA ELDAROVNA", position: "Baş Mühasib", startDate: "2022-10-01", salary: 1500, usedDays: 0 },
+  { id: 2, name: "LEYLA ADIGÖZƏLOVA TACİDDİN QIZI", position: "SATICI", startDate: "2026-02-12", salary: 450, usedDays: 0 },
+  { id: 3, name: "MƏSUD QULİYEV ARİF OĞLU", position: "Analitik", startDate: "2026-02-10", salary: 780, usedDays: 0 },
+  { id: 4, name: "NURLANƏ HÜSEYNOVA ELNUR QIZI", position: "SMM", startDate: "2025-09-25", salary: 400, usedDays: 0 },
+  { id: 5, name: "VƏFA HACIYEVA TARZAN QIZI", position: "Anbardar", startDate: "2025-09-22", salary: 440, usedDays: 0 },
+  { id: 6, name: "GÜNAY ŞİRƏLİZADƏ VAQİF QIZI", position: "SATICI", startDate: "2025-09-08", salary: 440, usedDays: 0 },
+  { id: 7, name: "FİDAN HACIYEVA ELMAN QIZI", position: "SATICI", startDate: "2025-08-13", salary: 440, usedDays: 0 },
+  { id: 8, name: "MURAD ƏZİMOV VAHİD OĞLU", position: "Brend Menecer", startDate: "2026-02-03", salary: 700, usedDays: 0 },
+  { id: 9, name: "NƏRMİN HÜSEYNOVA ELŞƏN QIZI", position: "Anbardar", startDate: "2025-09-17", salary: 500, usedDays: 0 },
+  { id: 10, name: "ZƏRBƏYİM MƏMMƏDOVA ELMƏDDİN QIZI", position: "SATICI", startDate: "2026-01-16", salary: 440, usedDays: 0 },
+  { id: 11, name: "BƏLQIZ MUSAYEVA ARAZ QIZI", position: "SATICI", startDate: "2026-01-16", salary: 440, usedDays: 0 },
+  { id: 12, name: "FİRUDİN QASIMOV İKRAM OĞLU", position: "Anbardar", startDate: "2025-12-26", salary: 500, usedDays: 0 },
+  { id: 13, name: "RƏQSANƏ HƏSƏNZADƏ ŞƏMSİ QIZI", position: "Anbardar, Satıcı", startDate: "2020-04-25", salary: 500, usedDays: 0 },
+  { id: 14, name: "FƏRİDƏ RZAYEVA EHTİRAM QIZI", position: "Menecer", startDate: "2020-04-20", salary: 600, usedDays: 0 },
+  { id: 15, name: "ANAR CƏBRAYILOV YAŞAR OĞLU", position: "Mütəxəssis (SƏTƏM)", startDate: "2024-01-01", salary: 440, usedDays: 0 },
+  { id: 16, name: "RƏNA ŞAHHÜSEYNOVA MƏMMƏDHÜSEYİN QIZI", position: "Anbardar", startDate: "2023-01-11", salary: 500, usedDays: 0 },
+  { id: 17, name: "MƏLAHƏT İBRAHİMOVA RASİM QIZI", position: "Xadimə", startDate: "2025-07-15", salary: 440, usedDays: 0 },
+  { id: 18, name: "MAHİRƏ MƏMMƏDZADƏ İLHAM QIZI", position: "Satıcı", startDate: "2021-07-14", salary: 440, usedDays: 0 },
+  { id: 19, name: "GÜLŞƏN MEJDİNOVA SALEH QIZI", position: "Xadimə", startDate: "2021-07-14", salary: 400, usedDays: 0 },
+  { id: 20, name: "HAFİZ HÜSEYNOV MİRMƏMMƏD OĞLU", position: "Anbardar", startDate: "2022-12-06", salary: 500, usedDays: 0 },
+  { id: 21, name: "ARZU ƏSKƏROVA AKİF QIZI", position: "Xadimə", startDate: "2024-09-17", salary: 400, usedDays: 0 },
+  { id: 22, name: "LALƏ CABBARLI ZAMİN QIZI", position: "SATICI", startDate: "2024-09-18", salary: 440, usedDays: 0 },
+  { id: 23, name: "AYTAC NURALİYEVA ARZU QIZI", position: "SATICI", startDate: "2024-09-18", salary: 440, usedDays: 0 },
+  { id: 24, name: "TÜRANƏ AĞAYEVA ELBURUZ QIZI", position: "Xəzinədar", startDate: "2024-03-01", salary: 555, usedDays: 0 },
+  { id: 25, name: "NURAY ƏKBƏROVA AZƏR QIZI", position: "SATICI", startDate: "2024-11-06", salary: 440, usedDays: 0 },
+  { id: 26, name: "RUZBƏY MÜQƏDDƏMİ CAVANŞİR OĞLU", position: "Müəssisənin direktoru", startDate: "2013-09-18", salary: 3000, usedDays: 0 },
+  { id: 27, name: "NAMİQ ABIYEV MƏMMƏDQULU OĞLU", position: "Menecer", startDate: "2024-09-18", salary: 600, usedDays: 0 },
+  { id: 28, name: "JALƏ ƏFƏNDİYEVA ABDULLA QIZI", position: "Xəzinədar", startDate: "2024-09-17", salary: 555, usedDays: 0 },
+  { id: 29, name: "FATİMƏ ƏHMƏDOVA YUSİF QIZI", position: "SATICI", startDate: "2024-06-11", salary: 440, usedDays: 0 },
+  { id: 30, name: "ZÜLFİYYƏ MƏHƏRRƏMOVA ADİL QIZI", position: "Böyük anbardar", startDate: "2024-06-11", salary: 500, usedDays: 0 },
+  { id: 31, name: "NƏRMİN BAXŞƏLİYEVA SÖVDÜMƏLİ QIZI", position: "SATICI", startDate: "2024-05-01", salary: 440, usedDays: 0 },
+  { id: 32, name: "CƏMİLƏ AĞAYEVA PİRƏLİ QIZI", position: "Menecer", startDate: "2021-04-02", salary: 600, usedDays: 0 },
+  { id: 33, name: "MEHRİBAN HÜSEYNOVA HÜSEYN QIZI", position: "Anbardar", startDate: "2021-06-16", salary: 500, usedDays: 0 },
+  { id: 34, name: "AYDAN İSLAMOVA MEHMAN QIZI", position: "Dizayner", startDate: "2022-08-05", salary: 500, usedDays: 0 },
+  { id: 35, name: "ŞAİQ ƏHMƏDOV ƏLƏKBƏR OĞLU", position: "Anbardar", startDate: "2022-12-06", salary: 500, usedDays: 0 },
+  { id: 36, name: "RƏQSANƏ ƏSMƏROVA HACƏLİ QIZI", position: "Anbardar", startDate: "2022-12-06", salary: 500, usedDays: 0 },
+];
+
+function calcEmployeeData(emp) {
+  const today = new Date();
+  const start = new Date(emp.startDate);
+  const diffDays = (today - start) / (1000 * 60 * 60 * 24);
+  const yearsWorked = diffDays / 365;
+  const earnedDays = yearsWorked * 21;
+  const remainingDays = Math.max(0, earnedDays - (emp.usedDays || 0));
+  const compensation = remainingDays * (emp.salary / 30.4);
+  let status = "Normal", statusColor = "#10b981";
+  if (remainingDays > 30) { status = "Məzuniyyətə çıxmalı!"; statusColor = "#ef4444"; }
+  else if (remainingDays > 21) { status = "Planlaşdırılmalı"; statusColor = "#f59e0b"; }
+  return { ...emp, yearsWorked, earnedDays, remainingDays, compensation, status, statusColor };
+}
+
+function fmtDate(d) {
+  if (!d) return "";
+  return new Date(d).toLocaleDateString("az-AZ");
+}
+
+function toAZN(n) {
+  return Number(n).toLocaleString("az-AZ", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " ₼";
+}
+
+function genOrder(emp, leaveStart, days) {
+  const d = calcEmployeeData(emp);
+  const s = new Date(leaveStart), e = new Date(s);
+  e.setDate(e.getDate() + days - 1);
+  const today = new Date();
+  return `ƏMƏK MƏZUNİYYƏTİ ƏMR-İ\n\nSıra №: MEZ-${emp.id}-${today.toISOString().slice(0,10)}\nTarix: ${fmtDate(today)}\n\nMÜESSİSƏ: _______________________________________\n\nƏMƏR:\n\n${emp.name} – ${emp.position} vəzifəsindəki işçiyə\n\nMəzuniyyət dövrü: ${fmtDate(leaveStart)} – ${fmtDate(e)}\nMəzuniyyət günlərinin sayı: ${days} təqvim günü\nİşə başlama tarixi: ${fmtDate(emp.startDate)}\nİş stajı: ${d.yearsWorked.toFixed(2)} il\nQazanılmış məzuniyyət günləri: ${d.earnedDays.toFixed(2)} gün\nİstifadə edilmiş günlər: ${emp.usedDays || 0} gün\nQalan məzuniyyət günləri: ${d.remainingDays.toFixed(2)} gün\n\nAylıq əmək haqqı: ${toAZN(d.salary)}\nOrta gündəlik əmək haqqı: ${toAZN(d.salary / 30.4)}\nÜmumi məzuniyyət haqqı: ${toAZN((d.salary / 30.4) * days)}\n\nQeyd: Əmək Məcəlləsinin 111-ci maddəsinə əsasən (332-VIIQD, 30.12.2025)\nsonuncu əməkhaqqından az olmamaqla orta əməkhaqqı saxlanılır.\n\nİmza: _________________________ Müdir: _________________________\nTarix: ${fmtDate(today)}`;
+}
+
+function genApp(emp, leaveStart, days, reason) {
+  const today = new Date();
+  const s = new Date(leaveStart), e = new Date(s);
+  e.setDate(e.getDate() + days - 1);
+  return `ƏRİZƏ\n\nMüəssisə rəhbərinə\n\nMən, ${emp.name}, ${emp.position} vəzifəsini icra edərək,\n${fmtDate(emp.startDate)} tarixindən müəssisədə çalışıram.\n\nƏmək Məcəlləsinin 112-ci maddəsinə əsasən mənə əsas əmək\nməzuniyyəti verilməsini xahiş edirəm.\n\nMəzuniyyət dövrü: ${fmtDate(leaveStart)} – ${fmtDate(e)}\nMəzuniyyət günlərinin sayı: ${days} təqvim günü\n${reason ? `Əlavə qeyd: ${reason}\n` : ""}\nTarix: ${fmtDate(today)}\nİmza: _________________________\nAd, soyad: ${emp.name}`;
+}
+
+// ── DOCUMENT MODAL ─────────────────────────────────────────────────────────
+function DocModal({ emp, onClose }) {
+  const [leaveStart, setLeaveStart] = useState(new Date().toISOString().slice(0,10));
+  const [days, setDays] = useState(21);
+  const [reason, setReason] = useState("");
+  const [docType, setDocType] = useState("app");
+  const d = calcEmployeeData(emp);
+  const text = docType === "app" ? genApp(emp, leaveStart, days, reason) : genOrder(emp, leaveStart, days);
+
+  const download = () => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([text], {type:"text/plain;charset=utf-8"}));
+    a.download = `${docType==="app"?"Erizə":"Emr"}_${emp.name.split(" ")[0]}.txt`;
+    a.click();
+  };
+
+  const ov = {position:"fixed",inset:0,background:"rgba(0,0,0,0.75)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",padding:"16px"};
+  const box = {background:"#0f1923",border:"1px solid #1e3a5f",borderRadius:"16px",width:"100%",maxWidth:"800px",maxHeight:"90vh",overflow:"hidden",display:"flex",flexDirection:"column"};
+
+  return (
+    <div style={ov} onClick={e => e.target===e.currentTarget && onClose()}>
+      <div style={box}>
+        <div style={{padding:"18px 24px",borderBottom:"1px solid #1e3a5f",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div>
+            <div style={{color:"#3b82f6",fontSize:"10px",fontWeight:700,letterSpacing:"2px"}}>SƏNƏD GENERATORU</div>
+            <div style={{color:"#e2e8f0",fontWeight:700,fontSize:"16px",marginTop:"2px"}}>{emp.name}</div>
+            <div style={{color:"#64748b",fontSize:"12px"}}>{emp.position} • Qalıq: {d.remainingDays.toFixed(1)} gün</div>
+          </div>
+          <button onClick={onClose} style={{background:"none",border:"1px solid #1e3a5f",color:"#94a3b8",borderRadius:"8px",padding:"6px 12px",cursor:"pointer",fontSize:"18px",lineHeight:1}}>✕</button>
+        </div>
+        <div style={{display:"flex",flex:1,overflow:"hidden"}}>
+          {/* Left panel */}
+          <div style={{width:"260px",padding:"18px",borderRight:"1px solid #1e3a5f",overflowY:"auto",background:"#0a1420",flexShrink:0}}>
+            <div style={{marginBottom:"16px"}}>
+              <div style={{color:"#64748b",fontSize:"10px",fontWeight:700,letterSpacing:"1px",marginBottom:"8px"}}>SƏNƏD NÖVİ</div>
+              <div style={{display:"flex",gap:"6px"}}>
+                {[["app","Ərizə"],["order","Əmr"]].map(([v,l])=>(
+                  <button key={v} onClick={()=>setDocType(v)} style={{flex:1,padding:"8px",borderRadius:"8px",border:"1px solid",borderColor:docType===v?"#3b82f6":"#1e3a5f",background:docType===v?"rgba(59,130,246,0.15)":"transparent",color:docType===v?"#3b82f6":"#64748b",cursor:"pointer",fontSize:"13px",fontWeight:600}}>{l}</button>
+                ))}
+              </div>
+            </div>
+            {[
+              ["BAŞLAMA TARİXİ","date",leaveStart,v=>setLeaveStart(v)],
+            ].map(([lbl,type,val,set])=>(
+              <div key={lbl} style={{marginBottom:"14px"}}>
+                <div style={{color:"#64748b",fontSize:"10px",fontWeight:700,letterSpacing:"1px",marginBottom:"6px"}}>{lbl}</div>
+                <input type={type} value={val} onChange={e=>set(e.target.value)} style={{width:"100%",background:"#0f1923",border:"1px solid #1e3a5f",borderRadius:"8px",padding:"8px 10px",color:"#e2e8f0",fontSize:"13px"}}/>
+              </div>
+            ))}
+            <div style={{marginBottom:"14px"}}>
+              <div style={{color:"#64748b",fontSize:"10px",fontWeight:700,letterSpacing:"1px",marginBottom:"6px"}}>GÜNLƏR</div>
+              <input type="number" min="1" max={Math.floor(d.remainingDays)} value={days} onChange={e=>setDays(Number(e.target.value))} style={{width:"100%",background:"#0f1923",border:"1px solid #1e3a5f",borderRadius:"8px",padding:"8px 10px",color:"#e2e8f0",fontSize:"13px"}}/>
+              <div style={{color:"#64748b",fontSize:"11px",marginTop:"4px"}}>Maks: {Math.floor(d.remainingDays)} gün</div>
+            </div>
+            {docType==="app" && (
+              <div style={{marginBottom:"14px"}}>
+                <div style={{color:"#64748b",fontSize:"10px",fontWeight:700,letterSpacing:"1px",marginBottom:"6px"}}>QEYD</div>
+                <textarea value={reason} onChange={e=>setReason(e.target.value)} rows={3} style={{width:"100%",background:"#0f1923",border:"1px solid #1e3a5f",borderRadius:"8px",padding:"8px",color:"#e2e8f0",fontSize:"13px",resize:"none"}}/>
+              </div>
+            )}
+            <div style={{background:"rgba(59,130,246,0.08)",border:"1px solid rgba(59,130,246,0.2)",borderRadius:"10px",padding:"12px",marginBottom:"14px"}}>
+              <div style={{color:"#64748b",fontSize:"10px",fontWeight:700,marginBottom:"8px"}}>HESABLAMA</div>
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:"4px"}}>
+                <span style={{color:"#94a3b8",fontSize:"12px"}}>Gündəlik:</span>
+                <span style={{color:"#e2e8f0",fontSize:"12px",fontWeight:600}}>{toAZN(d.salary/30.4)}</span>
+              </div>
+              <div style={{height:"1px",background:"#1e3a5f",margin:"6px 0"}}/>
+              <div style={{display:"flex",justifyContent:"space-between"}}>
+                <span style={{color:"#3b82f6",fontSize:"13px",fontWeight:700}}>Cəmi ({days} gün):</span>
+                <span style={{color:"#3b82f6",fontSize:"13px",fontWeight:700}}>{toAZN((d.salary/30.4)*days)}</span>
+              </div>
+            </div>
+            <button onClick={download} style={{width:"100%",background:"linear-gradient(135deg,#1d4ed8,#3b82f6)",border:"none",borderRadius:"10px",padding:"11px",color:"#fff",cursor:"pointer",fontSize:"14px",fontWeight:700}}>⬇ Yüklə (.txt)</button>
+          </div>
+          {/* Preview */}
+          <div style={{flex:1,padding:"18px",overflow:"auto"}}>
+            <div style={{color:"#64748b",fontSize:"10px",letterSpacing:"1px",fontWeight:700,marginBottom:"10px"}}>ÖNİZLƏMƏ</div>
+            <pre style={{background:"#060d16",border:"1px solid #1e3a5f",borderRadius:"10px",padding:"18px",color:"#c4d4e8",fontSize:"12px",lineHeight:"1.8",whiteSpace:"pre-wrap",fontFamily:"'Courier New',monospace",margin:0}}>{text}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── ADD EMPLOYEE MODAL ──────────────────────────────────────────────────────
+function AddModal({ onAdd, onClose }) {
+  const [f, setF] = useState({name:"",position:"",startDate:"",salary:""});
+  const set = (k,v) => setF(p=>({...p,[k]:v}));
+  const ok = f.name && f.position && f.startDate && Number(f.salary) > 0;
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.75)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",padding:"16px"}} onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div style={{background:"#0f1923",border:"1px solid #1e3a5f",borderRadius:"16px",width:"100%",maxWidth:"420px",padding:"28px"}}>
+        <div style={{color:"#3b82f6",fontSize:"10px",fontWeight:700,letterSpacing:"2px",marginBottom:"4px"}}>YENİ İŞÇİ</div>
+        <div style={{color:"#e2e8f0",fontSize:"18px",fontWeight:700,marginBottom:"22px"}}>İşçi əlavə et</div>
+        {[["Ad, Soyad, Ata adı","name","text"],["Vəzifə","position","text"],["İşə başlama tarixi","startDate","date"],["Aylıq əməkhaqqı (₼)","salary","number"]].map(([lbl,k,t])=>(
+          <div key={k} style={{marginBottom:"14px"}}>
+            <div style={{color:"#64748b",fontSize:"10px",fontWeight:700,letterSpacing:"1px",marginBottom:"6px"}}>{lbl.toUpperCase()}</div>
+            <input type={t} value={f[k]} onChange={e=>set(k,e.target.value)} placeholder={lbl} style={{width:"100%",background:"#0a1420",border:"1px solid #1e3a5f",borderRadius:"8px",padding:"10px 12px",color:"#e2e8f0",fontSize:"14px"}}/>
+          </div>
+        ))}
+        <div style={{display:"flex",gap:"10px",marginTop:"20px"}}>
+          <button onClick={onClose} style={{flex:1,background:"transparent",border:"1px solid #1e3a5f",borderRadius:"10px",padding:"11px",color:"#64748b",cursor:"pointer",fontSize:"14px"}}>Ləğv et</button>
+          <button disabled={!ok} onClick={()=>{onAdd(f);onClose();}} style={{flex:2,background:ok?"linear-gradient(135deg,#1d4ed8,#3b82f6)":"#1e3a5f",border:"none",borderRadius:"10px",padding:"11px",color:ok?"#fff":"#64748b",cursor:ok?"pointer":"not-allowed",fontSize:"14px",fontWeight:700}}>Əlavə et</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── EMPLOYEE ROW ────────────────────────────────────────────────────────────
+function EmpRow({ emp, onDoc }) {
+  const d = calcEmployeeData(emp);
+  const pct = Math.min(100, (emp.usedDays / Math.max(d.earnedDays,1)) * 100);
+  return (
+    <div style={{background:"#0a1420",border:"1px solid #1e3a5f",borderRadius:"12px",padding:"14px 18px",display:"flex",alignItems:"center",gap:"14px",transition:"border-color 0.2s"}}
+      onMouseEnter={e=>e.currentTarget.style.borderColor="#3b82f6"}
+      onMouseLeave={e=>e.currentTarget.style.borderColor="#1e3a5f"}>
+      <div style={{width:"40px",height:"40px",borderRadius:"50%",flexShrink:0,background:"linear-gradient(135deg,#1d4ed8,#6366f1)",display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:"14px"}}>{emp.name[0]}</div>
+      <div style={{flex:1,minWidth:0}}>
+        <div style={{color:"#e2e8f0",fontWeight:700,fontSize:"14px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{emp.name}</div>
+        <div style={{color:"#64748b",fontSize:"12px",marginTop:"1px"}}>{emp.position} • {fmtDate(emp.startDate)}</div>
+        <div style={{marginTop:"5px",display:"flex",alignItems:"center",gap:"8px"}}>
+          <div style={{flex:1,height:"3px",background:"#1e3a5f",borderRadius:"2px",overflow:"hidden"}}>
+            <div style={{width:`${pct}%`,height:"100%",background:"linear-gradient(90deg,#3b82f6,#6366f1)"}}/>
+          </div>
+          <span style={{color:"#64748b",fontSize:"11px",flexShrink:0}}>{d.remainingDays.toFixed(1)} gün</span>
+        </div>
+      </div>
+      <div style={{display:"flex",gap:"18px",flexShrink:0,alignItems:"center"}}>
+        <div style={{textAlign:"right",display:"none"}}>
+          <div style={{color:"#64748b",fontSize:"10px",fontWeight:700}}>MAAŞ</div>
+          <div style={{color:"#e2e8f0",fontSize:"13px",fontWeight:700}}>{toAZN(emp.salary)}</div>
+        </div>
+        <div style={{textAlign:"right"}}>
+          <div style={{color:"#64748b",fontSize:"10px",fontWeight:700,letterSpacing:"0.5px"}}>KOMPENSASİYA</div>
+          <div style={{color:"#34d399",fontSize:"14px",fontWeight:700}}>{toAZN(d.compensation)}</div>
+        </div>
+        <span style={{padding:"4px 10px",borderRadius:"20px",fontSize:"11px",fontWeight:700,whiteSpace:"nowrap",background:`${d.statusColor}18`,color:d.statusColor,border:`1px solid ${d.statusColor}40`}}>{d.status}</span>
+      </div>
+      <button onClick={()=>onDoc(emp)} style={{background:"rgba(59,130,246,0.1)",border:"1px solid rgba(59,130,246,0.3)",borderRadius:"8px",padding:"7px 13px",color:"#3b82f6",cursor:"pointer",fontSize:"12px",fontWeight:700,whiteSpace:"nowrap",flexShrink:0}}>📄 Sənəd</button>
+    </div>
+  );
+}
+
+// ── MAIN ────────────────────────────────────────────────────────────────────
+function App() {
+  const [emps, setEmps] = useState(INITIAL_EMPLOYEES);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [docEmp, setDocEmp] = useState(null);
+  const [showAdd, setShowAdd] = useState(false);
+  const [tab, setTab] = useState("dashboard");
+
+  // calc tab state
+  const [cSalary, setCSalary] = useState(1000);
+  const [cDays, setCDays] = useState(21);
+  const [cPrev, setCPrev] = useState(Array(12).fill(1000));
+  const cAvg = cPrev.reduce((a,b)=>a+Number(b),0)/12;
+  const cBase = Math.max(cSalary, cAvg);
+  const cTotal = (cBase/30.4)*cDays;
+
+  const computed = emps.map(calcEmployeeData);
+  const urgent = computed.filter(e=>e.status==="Məzuniyyətə çıxmalı!");
+  const plan = computed.filter(e=>e.status==="Planlaşdırılmalı");
+  const normal = computed.filter(e=>e.status==="Normal");
+  const totalComp = computed.reduce((a,e)=>a+e.compensation,0);
+  const totalDays = computed.reduce((a,e)=>a+e.remainingDays,0);
+
+  const filtered = computed.filter(e=>{
+    const ms = e.name.toLowerCase().includes(search.toLowerCase()) || e.position.toLowerCase().includes(search.toLowerCase());
+    const mf = filter==="all"||(filter==="urgent"&&e.status==="Məzuniyyətə çıxmalı!")||(filter==="plan"&&e.status==="Planlaşdırılmalı")||(filter==="normal"&&e.status==="Normal");
+    return ms && mf;
+  });
+
+  const addEmp = f => setEmps(p=>[...p,{id:p.length+1,name:f.name.toUpperCase(),position:f.position,startDate:f.startDate,salary:parseFloat(f.salary),usedDays:0}]);
+
+  const nav = [["dashboard","📊","Ana Səhifə"],["employees","👥","İşçilər"],["calc","🧮","Hesablama"]];
+
+  return (
+    <div style={{background:"#060d16",minHeight:"100vh",display:"flex"}}>
+      {/* SIDEBAR */}
+      <div style={{width:"220px",background:"#0a1420",borderRight:"1px solid #1e3a5f",position:"fixed",top:0,left:0,bottom:0,display:"flex",flexDirection:"column",padding:"24px 0",zIndex:100}}>
+        <div style={{padding:"0 24px 20px"}}>
+          <div style={{fontSize:"10px",letterSpacing:"2px",color:"#3b82f6",fontWeight:700,marginBottom:"4px"}}>ƏMƏK MƏCƏLLƏSI</div>
+          <div style={{fontSize:"16px",fontWeight:800,color:"#e2e8f0",lineHeight:1.3}}>Məzuniyyət<br/>Sistemi</div>
+          <div style={{fontSize:"10px",color:"#334155",marginTop:"4px"}}>332-VIIQD • 2026</div>
+        </div>
+        <div style={{height:"1px",background:"#1e3a5f",margin:"0 0 12px"}}/>
+        {nav.map(([k,ic,lb])=>(
+          <div key={k} onClick={()=>setTab(k)} style={{display:"flex",alignItems:"center",gap:"10px",padding:"11px 24px",cursor:"pointer",color:tab===k?"#3b82f6":"#64748b",background:tab===k?"rgba(59,130,246,0.1)":"transparent",borderLeft:tab===k?"3px solid #3b82f6":"3px solid transparent",fontSize:"13px",fontWeight:tab===k?700:500,transition:"all 0.15s"}}>
+            <span>{ic}</span><span>{lb}</span>
+          </div>
+        ))}
+        <div style={{marginTop:"auto",padding:"0 24px"}}>
+          <div style={{color:"#334155",fontSize:"10px",marginBottom:"6px"}}>BUGÜN</div>
+          <div style={{color:"#64748b",fontSize:"12px"}}>{new Date().toLocaleDateString("az-AZ",{day:"numeric",month:"long",year:"numeric"})}</div>
+        </div>
+      </div>
+
+      {/* MAIN CONTENT */}
+      <div style={{marginLeft:"220px",padding:"28px 32px",flex:1,minHeight:"100vh"}}>
+
+        {/* ── DASHBOARD ── */}
+        {tab==="dashboard" && (
+          <div>
+            <div style={{marginBottom:"26px"}}>
+              <div style={{fontSize:"10px",letterSpacing:"2px",color:"#3b82f6",fontWeight:700,marginBottom:"6px"}}>ANA SƏHIFƏ</div>
+              <div style={{fontSize:"26px",fontWeight:800}}>Məzuniyyət İcmalı</div>
+              <div style={{color:"#64748b",fontSize:"14px",marginTop:"4px"}}>Əmək Məcəlləsi Maddə 111 • 332-VIIQD əsasında</div>
+            </div>
+            {/* Stat cards */}
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"14px",marginBottom:"24px"}}>
+              {[["Ümumi İşçi",emps.length,"#3b82f6","👥"],["Təcili",urgent.length,"#ef4444","🔴"],["Planlaşdırılmalı",plan.length,"#f59e0b","🟡"],["Normal",normal.length,"#10b981","🟢"]].map(([l,v,c,ic])=>(
+                <div key={l} style={{background:"#0a1420",border:`1px solid ${c}30`,borderRadius:"14px",padding:"18px"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+                    <div>
+                      <div style={{color:"#64748b",fontSize:"10px",fontWeight:700,letterSpacing:"1px"}}>{l.toUpperCase()}</div>
+                      <div style={{color:c,fontSize:"36px",fontWeight:800,lineHeight:1.1,marginTop:"4px"}}>{v}</div>
+                    </div>
+                    <span style={{fontSize:"26px"}}>{ic}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"14px",marginBottom:"26px"}}>
+              <div style={{background:"#0a1420",border:"1px solid #1e3a5f",borderRadius:"14px",padding:"18px"}}>
+                <div style={{color:"#64748b",fontSize:"10px",fontWeight:700,letterSpacing:"1px",marginBottom:"8px"}}>ÜMUMİ QALIQ GÜNLƏR</div>
+                <div style={{color:"#3b82f6",fontSize:"32px",fontWeight:800}}>{totalDays.toFixed(0)}</div>
+                <div style={{color:"#64748b",fontSize:"12px",marginTop:"4px"}}>Bütün işçilər üzrə</div>
+              </div>
+              <div style={{background:"#0a1420",border:"1px solid #1e3a5f",borderRadius:"14px",padding:"18px"}}>
+                <div style={{color:"#64748b",fontSize:"10px",fontWeight:700,letterSpacing:"1px",marginBottom:"8px"}}>ÜMUMİ KOMPENSASİYA</div>
+                <div style={{color:"#34d399",fontSize:"28px",fontWeight:800}}>{toAZN(totalComp)}</div>
+                <div style={{color:"#64748b",fontSize:"12px",marginTop:"4px"}}>Bütün qalıq günlər üzrə</div>
+              </div>
+            </div>
+            {urgent.length>0 && (
+              <div>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"14px"}}>
+                  <div>
+                    <div style={{fontSize:"16px",fontWeight:700,color:"#ef4444"}}>🔴 Məzuniyyətə çıxmalı!</div>
+                    <div style={{color:"#64748b",fontSize:"13px"}}>30 gündən artıq qalıq günü olan işçilər</div>
+                  </div>
+                  <button onClick={()=>setTab("employees")} style={{background:"transparent",border:"1px solid #1e3a5f",borderRadius:"8px",padding:"7px 14px",color:"#64748b",cursor:"pointer",fontSize:"12px"}}>Hamısına bax →</button>
+                </div>
+                <div style={{display:"flex",flexDirection:"column",gap:"10px"}}>
+                  {urgent.slice(0,6).map(e=><EmpRow key={e.id} emp={e} onDoc={setDocEmp}/>)}
+                  {urgent.length>6 && <div style={{textAlign:"center",color:"#64748b",fontSize:"13px",padding:"8px"}}>+{urgent.length-6} daha işçi...</div>}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── EMPLOYEES ── */}
+        {tab==="employees" && (
+          <div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"22px"}}>
+              <div>
+                <div style={{fontSize:"10px",letterSpacing:"2px",color:"#3b82f6",fontWeight:700,marginBottom:"6px"}}>İŞÇİLƏR</div>
+                <div style={{fontSize:"26px",fontWeight:800}}>Bütün İşçilər</div>
+                <div style={{color:"#64748b",fontSize:"14px"}}>{filtered.length} / {emps.length} nəticə</div>
+              </div>
+              <button onClick={()=>setShowAdd(true)} style={{background:"linear-gradient(135deg,#1d4ed8,#3b82f6)",border:"none",borderRadius:"10px",padding:"11px 20px",color:"#fff",cursor:"pointer",fontSize:"14px",fontWeight:700}}>+ İşçi əlavə et</button>
+            </div>
+            <div style={{display:"flex",gap:"12px",marginBottom:"18px",flexWrap:"wrap"}}>
+              <input placeholder="🔍 Ad və ya vəzifə axtar..." value={search} onChange={e=>setSearch(e.target.value)}
+                style={{flex:1,minWidth:"200px",background:"#0a1420",border:"1px solid #1e3a5f",borderRadius:"8px",padding:"10px 14px",color:"#e2e8f0",fontSize:"14px"}}/>
+              <div style={{display:"flex",gap:"8px"}}>
+                {[["all","Hamısı","#3b82f6"],["urgent","Təcili","#ef4444"],["plan","Planlaşdır","#f59e0b"],["normal","Normal","#10b981"]].map(([v,l,c])=>(
+                  <button key={v} onClick={()=>setFilter(v)} style={{padding:"7px 13px",borderRadius:"20px",cursor:"pointer",fontSize:"12px",fontWeight:700,border:"1px solid",borderColor:filter===v?c:"#1e3a5f",background:filter===v?`${c}18`:"transparent",color:filter===v?c:"#64748b"}}>{l}</button>
+                ))}
+              </div>
+            </div>
+            <div style={{display:"flex",flexDirection:"column",gap:"10px"}}>
+              {filtered.map(e=><EmpRow key={e.id} emp={e} onDoc={setDocEmp}/>)}
+              {filtered.length===0 && <div style={{textAlign:"center",padding:"60px",color:"#334155"}}><div style={{fontSize:"40px",marginBottom:"12px"}}>🔍</div><div>Nəticə tapılmadı</div></div>}
+            </div>
+          </div>
+        )}
+
+        {/* ── CALC ── */}
+        {tab==="calc" && (
+          <div>
+            <div style={{marginBottom:"26px"}}>
+              <div style={{fontSize:"10px",letterSpacing:"2px",color:"#3b82f6",fontWeight:700,marginBottom:"6px"}}>KALKULYATOR</div>
+              <div style={{fontSize:"26px",fontWeight:800}}>Məzuniyyət Hesablama</div>
+              <div style={{color:"#64748b",fontSize:"14px"}}>Maddə 111 – Sonuncu əməkhaqqından az olmamaqla</div>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"22px"}}>
+              <div>
+                <div style={{background:"#0a1420",border:"1px solid #1e3a5f",borderRadius:"14px",padding:"20px",marginBottom:"14px"}}>
+                  <div style={{color:"#64748b",fontSize:"10px",fontWeight:700,letterSpacing:"1px",marginBottom:"16px"}}>MÜQAVİLƏ PARAMETRLƏRİ</div>
+                  {[["Sonuncu (müqavilə üzrə) əməkhaqqı ₼","number",cSalary,setCSalary],["Məzuniyyət günləri","number",cDays,setCDays]].map(([lbl,t,v,sv])=>(
+                    <div key={lbl} style={{marginBottom:"14px"}}>
+                      <div style={{color:"#94a3b8",fontSize:"12px",marginBottom:"6px"}}>{lbl}</div>
+                      <input type={t} value={v} onChange={e=>sv(Number(e.target.value))} style={{width:"100%",background:"#060d16",border:"1px solid #1e3a5f",borderRadius:"8px",padding:"9px 12px",color:"#e2e8f0",fontSize:"14px"}}/>
+                    </div>
+                  ))}
+                </div>
+                <div style={{background:"#0a1420",border:"1px solid #1e3a5f",borderRadius:"14px",padding:"20px"}}>
+                  <div style={{color:"#64748b",fontSize:"10px",fontWeight:700,letterSpacing:"1px",marginBottom:"14px"}}>SON 12 AYLIK QAZANC (₼)</div>
+                  {cPrev.map((v,i)=>(
+                    <div key={i} style={{display:"flex",alignItems:"center",gap:"10px",marginBottom:"7px"}}>
+                      <span style={{color:"#64748b",fontSize:"12px",width:"70px",flexShrink:0}}>{new Date(new Date().setMonth(new Date().getMonth()-11+i)).toLocaleDateString("az-AZ",{month:"short",year:"2-digit"})}</span>
+                      <input type="number" value={v} onChange={e=>setCPrev(p=>{const n=[...p];n[i]=Number(e.target.value);return n;})} style={{flex:1,background:"#060d16",border:"1px solid #1e3a5f",borderRadius:"6px",padding:"6px 10px",color:"#e2e8f0",fontSize:"13px"}}/>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <div style={{background:"#0a1420",border:"1px solid rgba(59,130,246,0.3)",borderRadius:"14px",padding:"20px",marginBottom:"14px"}}>
+                  <div style={{color:"#64748b",fontSize:"10px",fontWeight:700,letterSpacing:"1px",marginBottom:"18px"}}>NƏTİCƏ</div>
+                  {[["Sonuncu əməkhaqqı",toAZN(cSalary),"#e2e8f0"],["12 aylıq orta əmkh.",toAZN(cAvg),"#e2e8f0"],["Hesablama əsası",toAZN(cBase),cBase===cSalary?"#f59e0b":"#34d399"],["Gündəlik məbləğ",toAZN(cBase/30.4),"#3b82f6"]].map(([l,v,c])=>(
+                    <div key={l} style={{display:"flex",justifyContent:"space-between",marginBottom:"12px",alignItems:"center"}}>
+                      <span style={{color:"#64748b",fontSize:"13px"}}>{l}</span>
+                      <span style={{color:c,fontSize:"15px",fontWeight:700}}>{v}</span>
+                    </div>
+                  ))}
+                  <div style={{height:"1px",background:"#1e3a5f",margin:"14px 0"}}/>
+                  <div style={{textAlign:"center"}}>
+                    <div style={{color:"#64748b",fontSize:"12px",marginBottom:"6px"}}>ÜMUMİ MƏZUNIYYƏT HAKKI ({cDays} gün)</div>
+                    <div style={{color:"#34d399",fontSize:"38px",fontWeight:800}}>{toAZN(cTotal)}</div>
+                  </div>
+                </div>
+                <div style={{background:"#0a1420",border:"1px solid rgba(245,158,11,0.2)",borderRadius:"14px",padding:"20px"}}>
+                  <div style={{color:"#f59e0b",fontSize:"10px",fontWeight:700,letterSpacing:"1px",marginBottom:"10px"}}>📋 MADDƏ 111 QAYDASI</div>
+                  <div style={{color:"#94a3b8",fontSize:"13px",lineHeight:1.7}}>
+                    {cBase===cSalary
+                      ? <span>⚠️ <strong style={{color:"#f59e0b"}}>Sonuncu əməkhaqqı</strong> orta əməkhaqqından böyükdür — hesablamada sonuncu əməkhaqqı əsas götürülür.</span>
+                      : <span>✅ <strong style={{color:"#34d399"}}>Orta əməkhaqqı</strong> sonuncu əməkhaqqından böyükdür — hesablamada orta əməkhaqqı əsas götürülür.</span>
+                    }
+                  </div>
+                  <div style={{marginTop:"10px",padding:"10px",background:"#060d16",borderRadius:"8px",fontSize:"11px",color:"#64748b",fontStyle:"italic"}}>
+                    "...sonuncu əməkhaqqından az olmamaqla, orta əməkhaqqı saxlanılır..." — Maddə 111, hissə 1
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {docEmp && <DocModal emp={docEmp} onClose={()=>setDocEmp(null)}/>}
+      {showAdd && <AddModal onAdd={addEmp} onClose={()=>setShowAdd(false)}/>}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
